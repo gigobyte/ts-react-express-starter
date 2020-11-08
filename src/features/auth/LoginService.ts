@@ -10,9 +10,10 @@ import { jwtSecret } from '../../infrastructure/Secrets'
 import { Env } from '../../infrastructure/Env'
 
 export enum LoginError {
-  UserNotFound = '001',
-  InvalidRequest = '002',
-  TokenSigningFailed = '009'
+  UserNotFound = '64381d48',
+  InvalidRequest = '66514230',
+  TokenSigningFailed = '6814139a',
+  DbError = '69a9d53c'
 }
 
 const LoginBody = Codec.interface({
@@ -27,8 +28,12 @@ export const login = (
   rawBody: unknown
 ): EitherAsync<LoginError, string> =>
   EitherAsync(async ({ liftEither, fromPromise }) => {
-    const body = await liftEither(parseBody(rawBody))
+    const body = await liftEither(
+      LoginBody.decode(rawBody).mapLeft(_ => LoginError.InvalidRequest)
+    )
+
     const user = await fromPromise(findUserByCredentials(env.pool, body))
+
     const jwt = await liftEither(
       generateJwt(user.username).mapLeft(_ => LoginError.TokenSigningFailed)
     )
@@ -36,19 +41,18 @@ export const login = (
     return jwt
   })
 
-const parseBody = (rawBody: unknown): Either<LoginError, LoginBody> =>
-  LoginBody.decode(rawBody).mapLeft(_ => LoginError.InvalidRequest)
-
 const findUserByCredentials = (
   pool: Pool,
   body: LoginBody
-): Promise<Either<LoginError, User>> => {
-  const isPasswordValid = (user: User): boolean =>
+): EitherAsync<LoginError, User> => {
+  const isPasswordValid = (user: User) =>
     compareSync(user.password, body.password)
 
-  return findUserByUsername(body.username, pool).then(maybeUser =>
-    maybeUser.filter(isPasswordValid).toEither(LoginError.UserNotFound)
-  )
+  return findUserByUsername(body.username, pool)
+    .mapLeft(_ => LoginError.DbError)
+    .chain(async maybeUser =>
+      maybeUser.filter(isPasswordValid).toEither(LoginError.UserNotFound)
+    )
 }
 
 export const generateJwt = (username: string): Either<Error, string> =>

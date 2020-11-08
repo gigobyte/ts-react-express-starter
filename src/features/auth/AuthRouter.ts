@@ -15,8 +15,7 @@ export const authRoutes = {
           case LoginError.UserNotFound:
             return res.status(400).json({ code })
 
-          case LoginError.InvalidRequest:
-          case LoginError.TokenSigningFailed:
+          default:
             return res.status(500).json({ code })
         }
       })
@@ -33,11 +32,7 @@ export const authRoutes = {
           case RegisterError.UserAlreadyExists:
             return res.status(400).json({ code })
 
-          case RegisterError.InvalidRequest:
-          case RegisterError.ValidationFailed:
-          case RegisterError.PasswordHashingFailed:
-          case RegisterError.DbError:
-          case RegisterError.TokenSigningFailed:
+          default:
             return res.status(500).json({ code })
         }
       })

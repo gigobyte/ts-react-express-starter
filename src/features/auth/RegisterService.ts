@@ -1,7 +1,6 @@
 import { hash } from 'bcrypt'
 import { Pool } from 'pg'
 import { Codec, GetType, string } from 'purify-ts/Codec'
-import { Either } from 'purify-ts/Either'
 import { EitherAsync } from 'purify-ts/EitherAsync'
 import { Maybe } from 'purify-ts/Maybe'
 import { MaybeAsync } from 'purify-ts/MaybeAsync'
@@ -15,12 +14,12 @@ import {
 } from './UserRepo'
 
 export enum RegisterError {
-  UserAlreadyExists = '003',
-  InvalidRequest = '004',
-  ValidationFailed = '005',
-  PasswordHashingFailed = '006',
-  TokenSigningFailed = '007',
-  DbError = '008'
+  UserAlreadyExists = '6dd3cd20',
+  InvalidRequest = '6fc593de',
+  ValidationFailed = '7196171a',
+  PasswordHashingFailed = '7338cbc6',
+  TokenSigningFailed = '74fe15b0',
+  DbError = '76b28a8a'
 }
 
 const RegisterBody = Codec.interface({
@@ -34,78 +33,74 @@ type RegisterBody = GetType<typeof RegisterBody>
 export const register = (
   env: Env,
   rawBody: unknown
-): EitherAsync<RegisterError, string | undefined> =>
-  EitherAsync(async ({ liftEither, fromPromise }) => {
-    const body = await liftEither(parseBody(rawBody))
-    const dto = await liftEither(validateBody(body))
+): EitherAsync<RegisterError, string> =>
+  EitherAsync(async ({ liftEither }) => {
+    const body = await liftEither(
+      RegisterBody.decode(rawBody).mapLeft(_ => RegisterError.InvalidRequest)
+    )
 
-    await fromPromise(tryToInsertUser(dto, env.pool))
+    const dto = await liftEither(
+      validateBody(body).toEither(RegisterError.ValidationFailed)
+    )
+
+    await liftEither(await tryToInsertUser(dto, env.pool))
 
     const jwt = await liftEither(
-      generateJwt(dto.username).mapLeft(
-        err => (console.log(err) as never) || RegisterError.TokenSigningFailed
-      )
+      generateJwt(dto.username).mapLeft(_ => RegisterError.TokenSigningFailed)
     )
 
     return jwt
   })
 
-const parseBody = (rawBody: unknown): Either<RegisterError, RegisterBody> =>
-  RegisterBody.decode(rawBody).mapLeft(_ => RegisterError.InvalidRequest)
-
 const tryToInsertUser = (dto: InsertUserDTO, pool: Pool) =>
-  EitherAsync<RegisterError, void>(async ({ throwE }) => {
-    const userExists = await doesUserAlreadyExist(dto, pool)
-
-    if (userExists) {
-      throwE(RegisterError.UserAlreadyExists)
-    }
-  })
+  doesUserAlreadyExist(dto, pool)
+    .mapLeft(_ => RegisterError.DbError)
+    .ifRight(userExists => {
+      if (userExists) {
+        throw RegisterError.UserAlreadyExists
+      }
+    })
     .chain(() =>
       hashPassword(dto.password).toEitherAsync(
         RegisterError.PasswordHashingFailed
       )
     )
     .chain(hashedPassword =>
-      EitherAsync(() =>
-        insertUser({ ...dto, password: hashedPassword }, pool)
-      ).mapLeft(_ => RegisterError.DbError)
+      insertUser({ ...dto, password: hashedPassword }, pool).mapLeft(
+        _ => RegisterError.DbError
+      )
     )
 
 const doesUserAlreadyExist = (
   dto: InsertUserDTO,
   pool: Pool
-): Promise<boolean> =>
-  Promise.all([
-    findUserByUsername(dto.username, pool),
-    findUserByEmail(dto.email, pool)
-  ]).then(([maybeUser1, maybeUser2]) => maybeUser1.alt(maybeUser2).isJust())
+): EitherAsync<Error, boolean> =>
+  findUserByUsername(dto.username, pool)
+    .alt(findUserByEmail(dto.email, pool))
+    .map(x => x.isJust())
 
 const hashPassword = (password: string): MaybeAsync<string> =>
   MaybeAsync(() => hash(password, 10))
 
-const validateBody = (
-  body: RegisterBody
-): Either<RegisterError, InsertUserDTO> =>
-  validateUsername(body.username)
-    .chain(username =>
-      validateEmail(body.email).chain(email =>
-        validatePassword(body.password).map(password => ({
-          username,
-          email,
-          password
-        }))
-      )
+const validateBody = (body: RegisterBody): Maybe<InsertUserDTO> => {
+  const validateUsername = (username: string): Maybe<string> =>
+    Maybe.of(username)
+      .filter(x => x.length >= 4)
+      .filter(x => x.length < 99)
+
+  const validateEmail = (email: string): Maybe<string> =>
+    Maybe.of(email).filter(x => x.includes('@'))
+
+  const validatePassword = (password: string): Maybe<string> =>
+    Maybe.of(password).filter(x => x.length >= 6)
+
+  return validateUsername(body.username).chain(username =>
+    validateEmail(body.email).chain(email =>
+      validatePassword(body.password).map(password => ({
+        username,
+        email,
+        password
+      }))
     )
-    .toEither(RegisterError.ValidationFailed)
-
-const validateUsername = (username: string): Maybe<string> =>
-  Maybe.of(username)
-    .filter(x => x.length >= 4)
-    .filter(x => x.length < 99)
-
-const validateEmail = (email: string): Maybe<string> =>
-  Maybe.of(email).filter(x => x.includes('@'))
-
-const validatePassword = (password: string): Maybe<string> =>
-  Maybe.of(password).filter(x => x.length >= 6)
+  )
+}
