@@ -1,6 +1,6 @@
 import { hash } from 'bcrypt'
 import { Pool } from 'pg'
-import { Codec, GetInterface, string } from 'purify-ts/Codec'
+import { Codec, GetType, string } from 'purify-ts/Codec'
 import { Either } from 'purify-ts/Either'
 import { EitherAsync } from 'purify-ts/EitherAsync'
 import { Maybe } from 'purify-ts/Maybe'
@@ -29,7 +29,7 @@ const RegisterBody = Codec.interface({
   password: string
 })
 
-type RegisterBody = GetInterface<typeof RegisterBody>
+type RegisterBody = GetType<typeof RegisterBody>
 
 export const register = (
   env: Env,

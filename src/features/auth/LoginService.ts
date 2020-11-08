@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { EitherAsync } from 'purify-ts/EitherAsync'
-import { Codec, string, GetInterface } from 'purify-ts/Codec'
+import { Codec, string, GetType } from 'purify-ts/Codec'
 import { findUserByUsername } from './UserRepo'
 import { Pool } from 'pg'
 import { User } from './User'
@@ -20,7 +20,7 @@ const LoginBody = Codec.interface({
   password: string
 })
 
-type LoginBody = GetInterface<typeof LoginBody>
+type LoginBody = GetType<typeof LoginBody>
 
 export const login = (
   env: Env,
