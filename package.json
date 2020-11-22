@@ -30,6 +30,6 @@
     "morgan": "1.10.0",
     "pg": "8.5.1",
     "postgres-migrations": "5.1.0",
-    "purify-ts": "0.16.0"
+    "purify-ts": "0.16.1"
   }
 }
