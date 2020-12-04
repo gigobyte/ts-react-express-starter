@@ -1,11 +1,9 @@
-import jwt from 'jsonwebtoken'
 import { EitherAsync } from 'purify-ts/EitherAsync'
 import { Codec, string, GetType } from 'purify-ts/Codec'
 import { findUserByUsername } from './UserRepo'
 import { Env } from '../../infrastructure/Env'
 import { generateJwt } from '../../infrastructure/Jwt'
 import { comparePasswords } from '../../infrastructure/Bcrypt'
-import { identity } from 'purify-ts/Function'
 import { User } from './User'
 import { Right } from 'purify-ts/Either'
 

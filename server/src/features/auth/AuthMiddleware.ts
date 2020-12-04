@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express'
 import { Maybe, Nothing } from 'purify-ts/Maybe'
 import { MaybeAsync } from 'purify-ts/MaybeAsync'
 import { verifyJwt } from '../../infrastructure/Jwt'
-import { jwtSecret } from '../../infrastructure/Secrets'
 import { findUserByUsername } from './UserRepo'
 
 export const optionalUser = (

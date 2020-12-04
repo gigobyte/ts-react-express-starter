@@ -11,7 +11,7 @@ export const initializeEnv = (pool: Pool | null) => (
   req: Request,
   _: Response,
   next: NextFunction
-) => {
-  req.env = { pool } as any
+): void => {
+  req.env = { pool } as never
   next()
 }

@@ -16,7 +16,7 @@ Starter app for a full-stack TypeScript application with auth
 - [ ] Bundling (Webpack)
 - [ ] Transpilation with progressive polyfilling (Babel)
 - [ ] E2E Testing (Cypress)
-- [ ] i18n - Languages, units, dates, keyboard navigation, screen readers (???)
+- [ ] i18n - Languages + units + dates, Keyboard navigation, Screen readers (???)
 - [ ] PWA with Offline available (???)
 - [ ] Dark mode (???)
 
@@ -24,6 +24,12 @@ Starter app for a full-stack TypeScript application with auth
 
 - [x] Serving (Express)
 - [x] Persistent Storage (PostgreSQL)
-- [ ] Auth - Sessions, SSO (???)
+- [x] Logging (Winston)
+- [ ] Auth - Sessions, SSO, Password recovery (???)
 - [ ] Security - HSTS, CSRF, CSP (???)
-- [ ] Logging (Winston)
+
+### How to setup
+
+1. Create `Secrets.ts` file in `/server/infrastructure` by example
+2. Update the DB name in `/server/infrastructure/DB.ts`
+3. Rename `name` in both package.json files

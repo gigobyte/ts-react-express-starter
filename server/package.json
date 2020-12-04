@@ -4,7 +4,7 @@
   "description": "Starter app for a full-stack TypeScript application with auth",
   "scripts": {
     "start": "tsc && node dist/index.js",
-    "lint": "eslint src/**/*.{ts,tsx}"
+    "lint": "eslint ./src/**/*.{ts,tsx}"
   },
   "license": "ISC",
   "devDependencies": {
