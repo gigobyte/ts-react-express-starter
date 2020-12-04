@@ -4,14 +4,14 @@ import { findUserByUsername } from './UserRepo'
 import { Env } from '../../infrastructure/Env'
 import { generateJwt } from '../../infrastructure/Jwt'
 import { comparePasswords } from '../../infrastructure/Bcrypt'
-import { User } from './User'
-import { Right } from 'purify-ts/Either'
+import { Left, Right } from 'purify-ts/Either'
+import { CustomError } from 'ts-custom-error'
+import { ApplicationError, InvalidRequest } from '../../infrastructure/Error'
 
-export enum LoginError {
-  UserNotFound = '64381d48',
-  InvalidRequest = '66514230',
-  TokenSigningFailed = '6814139a',
-  DbError = '69a9d53c'
+class UserNotFound extends CustomError implements ApplicationError {
+  status = 400
+  code = 'UserNotFound'
+  log = false
 }
 
 const LoginBody = Codec.interface({
@@ -21,35 +21,28 @@ const LoginBody = Codec.interface({
 
 type LoginBody = GetType<typeof LoginBody>
 
-export const login = (
-  env: Env,
-  rawBody: unknown
-): EitherAsync<LoginError, string> =>
+export const login = (env: Env, rawBody: unknown) =>
   EitherAsync.liftEither(
-    LoginBody.decode(rawBody).mapLeft(_ => LoginError.InvalidRequest)
+    LoginBody.decode(rawBody).mapLeft(_ => new InvalidRequest())
   )
     .chain(body =>
       findUserByUsername(body.username, env.pool)
-        .mapLeft(_ => LoginError.DbError)
-        .chain(async maybeUser => maybeUser.toEither(LoginError.UserNotFound))
-        .chain<LoginError, User>(async user => {
+        .chain(async maybeUser => maybeUser.toEither(new UserNotFound()))
+        .chain(async user => {
           const compareResult = await comparePasswords(
             user.password,
             body.password
           )
 
-          return compareResult.caseOf({
-            Left: _ => {
-              throw LoginError.TokenSigningFailed
-            },
-            Right: isSamePassword => {
+          return EitherAsync.liftEither(
+            compareResult.chain(isSamePassword => {
               if (isSamePassword) {
                 return Right(user)
               }
 
-              throw LoginError.UserNotFound
-            }
-          })
+              return Left(new UserNotFound())
+            })
+          )
         })
     )
     .map(user => generateJwt(user.username))

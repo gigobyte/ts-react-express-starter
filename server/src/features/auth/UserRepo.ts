@@ -1,5 +1,5 @@
 import { Pool } from 'pg'
-import { withConn } from '../../infrastructure/DB'
+import { DBError, withConn } from '../../infrastructure/DB'
 import { Maybe } from 'purify-ts/Maybe'
 import { User } from './User'
 import { EitherAsync } from 'purify-ts/EitherAsync'
@@ -13,36 +13,30 @@ export interface InsertUserDTO {
 export const insertUser = (
   dto: InsertUserDTO,
   pool: Pool
-): EitherAsync<Error, void> =>
-  EitherAsync(() =>
-    withConn(pool, async conn => {
-      await conn.query(
-        'INSERT INTO users (username, email, password) VALUES ($1, $2, $3)',
-        [dto.username, dto.email, dto.password]
-      )
-    })
-  )
+): EitherAsync<DBError, void> =>
+  withConn(pool, async conn => {
+    await conn.query(
+      'INSERT INTO users (username, email, password) VALUES ($1, $2, $3)',
+      [dto.username, dto.email, dto.password]
+    )
+  })
 
 export const findUserByUsername = (
   username: string,
   pool: Pool
-): EitherAsync<Error, Maybe<User>> =>
-  EitherAsync(() =>
-    withConn(pool, conn =>
-      conn
-        .query('SELECT * FROM users WHERE username = $1 LIMIT 1', [username])
-        .then(res => Maybe.fromNullable(res.rows[0]))
-    )
+): EitherAsync<DBError, Maybe<User>> =>
+  withConn(pool, conn =>
+    conn
+      .query('SELECTa * FROM users WHERE username = $1 LIMIT 1', [username])
+      .then(res => Maybe.fromNullable(res.rows[0]))
   )
 
 export const findUserByEmail = (
   email: string,
   pool: Pool
-): EitherAsync<Error, Maybe<User>> =>
-  EitherAsync(() =>
-    withConn(pool, conn =>
-      conn
-        .query('SELECT * FROM users WHERE email = $1 LIMIT 1', [email])
-        .then(res => Maybe.fromNullable(res.rows[0]))
-    )
+): EitherAsync<DBError, Maybe<User>> =>
+  withConn(pool, conn =>
+    conn
+      .query('SELECT * FROM users WHERE email = $1 LIMIT 1', [email])
+      .then(res => Maybe.fromNullable(res.rows[0]))
   )

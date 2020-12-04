@@ -1,7 +1,17 @@
 import { Pool, PoolClient } from 'pg'
+import { v4 as uuidv4 } from 'uuid'
 import { migrate } from 'postgres-migrations'
+import { EitherAsync } from 'purify-ts/EitherAsync'
+import { CustomError } from 'ts-custom-error'
+import { ApplicationError } from './Error'
 import { logger } from './Logger'
 import { dbPassword } from './Secrets'
+
+export class DBError extends CustomError implements ApplicationError {
+  status = 500
+  code = uuidv4()
+  log = true
+}
 
 export const createDbPool = async (): Promise<Pool | null> => {
   const pool = new Pool({
@@ -28,15 +38,18 @@ export const createDbPool = async (): Promise<Pool | null> => {
   return pool
 }
 
-export const withConn = async <T>(
+export const withConn = <T>(
   pool: Pool,
   f: (conn: PoolClient) => Promise<T>
-): Promise<T> => {
-  const client = await pool.connect()
+): EitherAsync<DBError, T> =>
+  EitherAsync(async () => {
+    const client = await pool.connect()
 
-  try {
-    return await f(client)
-  } finally {
-    await client.release()
-  }
-}
+    try {
+      return await f(client)
+    } catch (e) {
+      throw new DBError(e.message)
+    } finally {
+      await client.release()
+    }
+  })
