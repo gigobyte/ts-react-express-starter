@@ -15,8 +15,6 @@ export interface ApplicationError extends Error {
   log: boolean
 }
 
-export class ApplicationError {}
-
 export const processError = (res: Response) => (
   err: ApplicationError
 ): void => {
