@@ -16,7 +16,7 @@ Starter app for a full-stack TypeScript application with auth
 - [ ] Bundling (Webpack)
 - [ ] Transpilation with progressive polyfilling (Babel)
 - [ ] E2E Testing (Cypress)
-- [ ] i18n - languages, units, dates, keyboard navigation, screen readers (???)
+- [ ] i18n - Languages, units, dates, keyboard navigation, screen readers (???)
 - [ ] PWA with Offline available (???)
 - [ ] Dark mode (???)
 
@@ -24,6 +24,6 @@ Starter app for a full-stack TypeScript application with auth
 
 - [x] Serving (Express)
 - [x] Persistent Storage (PostgreSQL)
-- [ ] Auth - sessions, SSO (???)
+- [ ] Auth - Sessions, SSO (???)
 - [ ] Security - HSTS, CSRF, CSP (???)
 - [ ] Logging (Winston)

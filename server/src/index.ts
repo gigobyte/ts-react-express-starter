@@ -4,26 +4,26 @@ import cors from 'cors'
 import { createDbPool } from './infrastructure/DB'
 import { requireUser } from './features/auth/AuthMiddleware'
 import { authRoutes } from './features/auth/AuthRouter'
+import { initializeEnv } from './infrastructure/Env'
 
-async function main() {
-  const pool = await createDbPool()
+const prerequisites = [createDbPool()]
+
+Promise.all(prerequisites).then(([pool]) => {
   const app = express()
   const port = process.env.PORT || 8081
 
-  app.use(morgan('dev'))
-  app.use(cors())
-  app.use(express.json())
-  app.use((req, _, next) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    req.env = {} as any
-    req.env.pool = pool
-    next()
-  })
-
   app
-    .get('/health-check', (_, res) => {
-      res.json({ healthy: true })
+    .use(morgan('dev'))
+    .use(cors())
+    .use(express.json())
+    .get('/health', (_, res) => {
+      if (pool) {
+        res.status(200).json({ status: 'healthy' })
+      } else {
+        res.status(503).json({ status: 'unavailable' })
+      }
     })
+    .use(initializeEnv(pool))
     .get('/me', requireUser, authRoutes.me)
     .post('/login', authRoutes.login)
     .post('/register', authRoutes.register)
@@ -31,6 +31,4 @@ async function main() {
   app.listen(port, () => {
     console.log(`App started successfully on ${port}!`)
   })
-}
-
-main()
+})

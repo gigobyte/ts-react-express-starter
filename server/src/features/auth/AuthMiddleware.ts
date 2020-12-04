@@ -1,7 +1,7 @@
-import jwt from 'jsonwebtoken'
 import { Request, Response, NextFunction } from 'express'
 import { Maybe, Nothing } from 'purify-ts/Maybe'
 import { MaybeAsync } from 'purify-ts/MaybeAsync'
+import { verifyJwt } from '../../infrastructure/Jwt'
 import { jwtSecret } from '../../infrastructure/Secrets'
 import { findUserByUsername } from './UserRepo'
 
@@ -11,9 +11,7 @@ export const optionalUser = (
   next: NextFunction
 ): void => {
   MaybeAsync.liftMaybe(Maybe.fromNullable(req.header('Authorization')))
-    .chain(async authHeader =>
-      Maybe.encase(() => jwt.verify(authHeader, jwtSecret) as string)
-    )
+    .chain(async authHeader => verifyJwt(authHeader).toMaybe())
     .chain(username =>
       findUserByUsername(username, req.env.pool).orDefault(Nothing)
     )

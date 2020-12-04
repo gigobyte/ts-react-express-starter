@@ -1,11 +1,10 @@
-import { hash } from 'bcrypt'
 import { Pool } from 'pg'
 import { Codec, GetType, string } from 'purify-ts/Codec'
 import { EitherAsync } from 'purify-ts/EitherAsync'
 import { Maybe } from 'purify-ts/Maybe'
-import { MaybeAsync } from 'purify-ts/MaybeAsync'
+import { hashPassword } from '../../infrastructure/Bcrypt'
 import { Env } from '../../infrastructure/Env'
-import { generateJwt } from './LoginService'
+import { generateJwt } from '../../infrastructure/Jwt'
 import {
   findUserByEmail,
   findUserByUsername,
@@ -45,11 +44,7 @@ export const register = (
 
     await liftEither(await tryToInsertUser(dto, env.pool))
 
-    const jwt = await liftEither(
-      generateJwt(dto.username).mapLeft(_ => RegisterError.TokenSigningFailed)
-    )
-
-    return jwt
+    return generateJwt(dto.username)
   })
 
 const tryToInsertUser = (dto: InsertUserDTO, pool: Pool) =>
@@ -61,8 +56,8 @@ const tryToInsertUser = (dto: InsertUserDTO, pool: Pool) =>
       }
     })
     .chain(() =>
-      hashPassword(dto.password).toEitherAsync(
-        RegisterError.PasswordHashingFailed
+      hashPassword(dto.password).mapLeft(
+        _ => RegisterError.PasswordHashingFailed
       )
     )
     .chain(hashedPassword =>
@@ -78,9 +73,6 @@ const doesUserAlreadyExist = (
   findUserByUsername(dto.username, pool)
     .alt(findUserByEmail(dto.email, pool))
     .map(x => x.isJust())
-
-const hashPassword = (password: string): MaybeAsync<string> =>
-  MaybeAsync(() => hash(password, 10))
 
 const validateBody = (body: RegisterBody): Maybe<InsertUserDTO> => {
   const validateUsername = (username: string): Maybe<string> =>
