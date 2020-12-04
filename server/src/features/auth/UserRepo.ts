@@ -27,7 +27,7 @@ export const findUserByUsername = (
 ): EitherAsync<DBError, Maybe<User>> =>
   withConn(pool, conn =>
     conn
-      .query('SELECTa * FROM users WHERE username = $1 LIMIT 1', [username])
+      .query('SELECT * FROM users WHERE username = $1 LIMIT 1', [username])
       .then(res => Maybe.fromNullable(res.rows[0]))
   )
 

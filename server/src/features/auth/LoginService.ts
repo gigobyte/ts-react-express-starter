@@ -28,21 +28,13 @@ export const login = (env: Env, rawBody: unknown) =>
     .chain(body =>
       findUserByUsername(body.username, env.pool)
         .chain(async maybeUser => maybeUser.toEither(new UserNotFound()))
-        .chain(async user => {
-          const compareResult = await comparePasswords(
+        .chain(user =>
+          comparePasswords(
             user.password,
             body.password
+          ).chain(async isSamePassword =>
+            isSamePassword ? Right(user) : Left(new UserNotFound())
           )
-
-          return EitherAsync.liftEither(
-            compareResult.chain(isSamePassword => {
-              if (isSamePassword) {
-                return Right(user)
-              }
-
-              return Left(new UserNotFound())
-            })
-          )
-        })
+        )
     )
     .map(user => generateJwt(user.username))
