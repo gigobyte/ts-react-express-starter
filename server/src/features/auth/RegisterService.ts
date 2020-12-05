@@ -11,7 +11,7 @@ import {
   InvalidRequest,
   ValidationFailed
 } from '../../infrastructure/Error'
-import { generateJwt } from '../../infrastructure/Jwt'
+import { generateJwt } from '../../infrastructure/JWT'
 import {
   findUserByEmail,
   findUserByUsername,
