@@ -4,7 +4,12 @@
   "description": "Starter app for a full-stack TypeScript application with auth",
   "scripts": {
     "start": "tsc && node dist/index.js",
-    "lint": "eslint ./src/**/*.{ts,tsx}"
+    "lint": "eslint ./src/**/*.{ts,tsx}",
+    "compile": "tsc --noEmit"
+  },
+  "engines": {
+    "node": "15.2.1",
+    "npm": "7.0.7"
   },
   "license": "ISC",
   "devDependencies": {

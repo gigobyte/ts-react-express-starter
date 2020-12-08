@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "baseUrl": "../node_modules",
+    "target": "es6",
+    "lib": ["DOM", "ES2015", "ES2016", "ES2017", "ES2018", "ES2019", "ES2020", "ESnext"],
+    "types": ["cypress"]
+  },
+  "include": ["**/*.ts"]
+}

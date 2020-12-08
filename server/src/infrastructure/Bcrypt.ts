@@ -14,7 +14,7 @@ export const comparePasswords = (
   hashedPassword: string,
   attempt: string
 ): EitherAsync<BcryptError, boolean> =>
-  EitherAsync<Error, boolean>(() => compare(hashedPassword, attempt)).mapLeft(
+  EitherAsync<Error, boolean>(() => compare(attempt, hashedPassword)).mapLeft(
     err => new BcryptError(err.message)
   )
 

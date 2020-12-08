@@ -6,7 +6,8 @@ import { requireUser } from './features/auth/AuthMiddleware'
 import { authRoutes } from './features/auth/AuthRouter'
 import { initializeEnv } from './infrastructure/Env'
 
-const prerequisites = [createDbPool()]
+// https://github.com/microsoft/TypeScript/issues/41831
+const prerequisites = [createDbPool(), Promise.resolve()] as const
 
 Promise.all(prerequisites).then(([pool]) => {
   const app = express()
