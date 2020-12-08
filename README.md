@@ -12,10 +12,12 @@ Starter app for a full-stack TypeScript application with auth
 
 ## Front End
 
-- [ ] Rendering (React)
-- [ ] Bundling (Webpack)
-- [ ] Transpilation with progressive polyfilling (Babel)
-- [ ] E2E Testing (Cypress)
+- [x] Rendering (React)
+- [x] Client-side routing (React-router)
+- [x] Bundling (Webpack)
+- [x] Transpilation with progressive polyfilling (Babel)
+- [x] E2E Testing (Cypress)
+- [x] Styling (Tailwind, PostCSS, Autoprefixer, modern-modernize)
 - [ ] i18n - Languages + units + dates, Keyboard navigation, Screen readers (???)
 - [ ] PWA with Offline available (???)
 - [ ] Dark mode (???)
