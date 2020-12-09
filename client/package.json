@@ -11,7 +11,7 @@
     "test": "cypress run"
   },
   "engines": {
-    "node": "15.3.0",
+    "node": "15.4.0",
     "npm": "7.1.1"
   },
   "author": "",
