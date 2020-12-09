@@ -11,7 +11,6 @@ import {
   InvalidRequest,
   ValidationFailed
 } from '../../infrastructure/Error'
-import { generateJwt } from '../../infrastructure/JWT'
 import {
   findUserByEmail,
   findUserByUsername,
@@ -39,7 +38,7 @@ export const register = (env: Env, rawBody: unknown) =>
   )
     .chain(async body => validateBody(body).toEither(new ValidationFailed()))
     .chain(dto => tryToInsertUser(dto, env.pool).map(_ => dto))
-    .map(dto => generateJwt(dto.username))
+    .map<void>(_ => undefined)
 
 const tryToInsertUser = (dto: InsertUserDTO, pool: Pool) =>
   findUserByUsername(dto.username, pool)

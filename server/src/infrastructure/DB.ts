@@ -5,7 +5,6 @@ import { EitherAsync } from 'purify-ts/EitherAsync'
 import { CustomError } from 'ts-custom-error'
 import { ApplicationError } from './Error'
 import { logger } from './Logger'
-import { dbPassword } from './Secrets'
 
 export class DBError extends CustomError implements ApplicationError {
   status = 500
@@ -17,7 +16,7 @@ export const createDbPool = async (): Promise<Pool | null> => {
   const pool = new Pool({
     database: 'exampledb',
     user: 'postgres',
-    password: dbPassword,
+    password: process.env.DB_PASSWORD,
     host: 'localhost',
     port: 5432
   })

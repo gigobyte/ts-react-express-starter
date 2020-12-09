@@ -18,6 +18,11 @@ export interface ApplicationError extends Error {
 export const processError = (res: Response) => (
   err: ApplicationError
 ): void => {
+  if (!err.code && !err.status) {
+    logger.error(err)
+    res.status(500).send()
+  }
+
   if (err.log) {
     logger.error(err)
   }

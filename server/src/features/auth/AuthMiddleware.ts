@@ -1,7 +1,10 @@
 import { Request, Response, NextFunction } from 'express'
-import { Maybe, Nothing } from 'purify-ts/Maybe'
+import { Nothing } from 'purify-ts/Maybe'
 import { MaybeAsync } from 'purify-ts/MaybeAsync'
-import { verifyJwt } from '../../infrastructure/JWT'
+import {
+  getAccessTokenFromRequest,
+  verifyAccessToken
+} from '../../infrastructure/JWT'
 import { findUserByUsername } from './UserRepo'
 
 export const optionalUser = (
@@ -9,9 +12,9 @@ export const optionalUser = (
   _: Response,
   next: NextFunction
 ): void => {
-  MaybeAsync.liftMaybe(Maybe.fromNullable(req.header('Authorization')))
-    .chain(async authHeader => verifyJwt(authHeader).toMaybe())
-    .chain(username =>
+  MaybeAsync.liftMaybe(getAccessTokenFromRequest(req))
+    .chain(async authHeader => verifyAccessToken(authHeader).toMaybe())
+    .chain(({ username }) =>
       findUserByUsername(username, req.env.pool).orDefault(Nothing)
     )
     .ifJust(user => {

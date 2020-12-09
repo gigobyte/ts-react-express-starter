@@ -2,7 +2,10 @@ import { EitherAsync } from 'purify-ts/EitherAsync'
 import { Codec, string, GetType } from 'purify-ts/Codec'
 import { findUserByUsername } from './UserRepo'
 import { Env } from '../../infrastructure/Env'
-import { generateJwt } from '../../infrastructure/JWT'
+import {
+  generateAccessToken,
+  generateRefreshToken
+} from '../../infrastructure/JWT'
 import { comparePasswords } from '../../infrastructure/Bcrypt'
 import { Left, Right } from 'purify-ts/Either'
 import { CustomError } from 'ts-custom-error'
@@ -37,4 +40,7 @@ export const login = (env: Env, rawBody: unknown) =>
           )
         )
     )
-    .map(user => generateJwt(user.username))
+    .map(user => ({
+      accessToken: generateAccessToken(user.username),
+      refreshToken: generateRefreshToken(user.username)
+    }))
