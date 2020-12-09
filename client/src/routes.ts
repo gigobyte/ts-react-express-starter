@@ -26,3 +26,5 @@ export const routes: RouteConfig[] = [
     component: Register
   }
 ]
+
+export const publicRoutes = ['/register']

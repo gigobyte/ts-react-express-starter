@@ -19,7 +19,12 @@ Promise.all(prerequisites).then(([pool]) => {
 
   app
     .use(morgan('dev'))
-    .use(cors())
+    .use(
+      cors({
+        credentials: true,
+        origin: 'http://localhost:8080'
+      })
+    )
     .use(express.json())
     .use(cookieParser())
     .get('/health', (_, res) => {

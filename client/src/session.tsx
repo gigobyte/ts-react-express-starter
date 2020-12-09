@@ -1,10 +1,15 @@
-import React, { useEffect } from 'react'
-import axios from 'axios'
+import { createContext, useContext } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import { useQuery } from 'react-query'
+import { request } from './http'
+import { publicRoutes } from './routes'
+
+let accessToken = ''
+export const setAccessToken = (token: string) => (accessToken = token)
+export const getAccessToken = () => accessToken
 
 interface Session {
-  user: User
+  user?: User
 }
 
 interface User {
@@ -12,30 +17,47 @@ interface User {
   createdOn: string
 }
 
-const SessionContext = React.createContext<Session | null>(null)
+const SessionContext = createContext<Session | null>(null)
 
-const fetchUser = () =>
-  axios.get<User>(process.env.API_ROOT + '/me').then(res => res.data)
+const fetchUser = async () => {
+  const refreshTokenResponse = await request<{ accessToken: string }>({
+    method: 'POST',
+    url: '/refresh-token'
+  })
+
+  setAccessToken(refreshTokenResponse.data.accessToken)
+
+  return request<User>({ url: '/me' }).then(res => res.data)
+}
 
 export const SessionProvider: React.FC = ({ children }) => {
   const history = useHistory()
   const location = useLocation()
-  const user = useQuery('user', fetchUser, { retry: false })
 
-  useEffect(() => {
-    if (user.isError && location.pathname !== '/register') {
-      history.push('/login')
+  const user = useQuery('user', fetchUser, {
+    retry: false,
+    refetchOnWindowFocus: false,
+    refetchInterval: 6000,
+    onError: () => {
+      if (!publicRoutes.includes(location.pathname)) {
+        history.push('/login')
+      }
     }
-  }, [user])
+  })
 
-  if (!user.isFetched) {
+  if (user.isFetching) {
     return null
   }
 
   return (
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    <SessionContext.Provider value={{ user: user.data! }}>
+    <SessionContext.Provider value={{ user: user.data }}>
       {children}
     </SessionContext.Provider>
   )
+}
+
+export const useUser = () => {
+  const session = useContext(SessionContext)
+
+  return session?.user
 }

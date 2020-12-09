@@ -1,6 +1,7 @@
 import { Response } from 'express'
 import { CustomError } from 'ts-custom-error'
 import { logger } from './Logger'
+import { v4 as uuidv4 } from 'uuid'
 
 export interface ApplicationError extends Error {
   /** What HTTP status code to respond with */
@@ -19,8 +20,7 @@ export const processError = (res: Response) => (
   err: ApplicationError
 ): void => {
   if (!err.code && !err.status) {
-    logger.error(err)
-    res.status(500).send()
+    err = new UnexpectedError(err.message)
   }
 
   if (err.log) {
@@ -31,6 +31,12 @@ export const processError = (res: Response) => (
 }
 
 // General errors
+
+class UnexpectedError extends CustomError implements ApplicationError {
+  status = 500
+  code = uuidv4()
+  log = true
+}
 
 export class InvalidRequest extends CustomError implements ApplicationError {
   status = 500

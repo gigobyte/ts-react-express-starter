@@ -3,5 +3,6 @@
     "config:base",
     ":pinAllExceptPeerDependencies"
   ],
-  "ignorePaths": []
+  "ignorePaths": [],
+  "automerge": true
 }

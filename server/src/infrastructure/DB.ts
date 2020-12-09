@@ -14,8 +14,8 @@ export class DBError extends CustomError implements ApplicationError {
 
 export const createDbPool = async (): Promise<Pool | null> => {
   const pool = new Pool({
-    database: 'exampledb',
-    user: 'postgres',
+    database: process.env.DB_NAME,
+    user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     host: 'localhost',
     port: 5432

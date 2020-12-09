@@ -5,7 +5,7 @@ export interface User {
   username: string
   email: string
   password: string
-  createdOn: string
+  created_on: string
 }
 
 export interface PublicUser {
@@ -15,5 +15,5 @@ export interface PublicUser {
 
 export const toPublicUser = (user: User): PublicUser => ({
   username: user.username,
-  createdOn: user.createdOn
+  createdOn: user.created_on
 })

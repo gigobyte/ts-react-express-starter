@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import jwt from 'jsonwebtoken'
 import { Request } from 'express'
 import { Either } from 'purify-ts/Either'
@@ -8,22 +7,22 @@ import { ApplicationError } from './Error'
 import { Maybe } from 'purify-ts/Maybe'
 
 class JwtError extends CustomError implements ApplicationError {
-  status = 500
+  status = 401
   code = uuidv4()
-  log = false
+  log = true
 }
 
 export const generateAccessToken = (username: string): string =>
   jwt.sign({ username }, process.env.ACCESS_TOKEN_SECRET!, {
     algorithm: 'HS256',
-    issuer: 'example-app',
+    issuer: process.env.APP_NAME,
     expiresIn: '15m'
   })
 
 export const generateRefreshToken = (username: string): string =>
   jwt.sign({ username }, process.env.REFRESH_TOKEN_SECRET!, {
     algorithm: 'HS256',
-    issuer: 'example-app',
+    issuer: process.env.APP_NAME,
     expiresIn: '30d'
   })
 

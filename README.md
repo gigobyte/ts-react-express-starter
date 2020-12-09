@@ -33,6 +33,4 @@ Starter app for a full-stack TypeScript application with auth
 ### How to setup
 
 1. Create `.env` file in the root folder by example
-2. Change the DB name in `/server/infrastructure/DB.ts`
-3. Change the issuer in `/server/infrastrcuture/JWT.ts`
-4. Rename `name` in both package.json files
+2. Change `name` and `description` in both package.json files

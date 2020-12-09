@@ -14,6 +14,7 @@ module.exports = {
   rules: {
     'no-fallthrough': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/no-unused-vars': [
       'error',
       {

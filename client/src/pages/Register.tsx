@@ -1,23 +1,29 @@
-import axios from 'axios'
 import { useState } from 'react'
 import { useMutation } from 'react-query'
+import { useHistory } from 'react-router'
+import { ApiError, request } from '../http'
 
 const register = (data: {
   username: string
   password: string
   email: string
-}) => axios.post(process.env.API_ROOT + '/register', data)
+}) => request({ method: 'POST', url: '/register', data })
 
 export const Register = () => {
+  const history = useHistory()
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
 
-  const [attemptRegister] = useMutation(register)
+  const { mutateAsync: registerMutation } = useMutation(register, {
+    onSuccess: () => history.push('/login'),
+    onError: (err: ApiError) => setError(err.response.data.code)
+  })
 
   return (
     <div>
-      Register
+      <div>Register</div>
       <input
         className="border-2 border-black"
         value={username}
@@ -36,7 +42,9 @@ export const Register = () => {
         placeholder="email"
         onChange={e => setEmail(e.target.value)}
       ></input>
-      <button onClick={() => attemptRegister({ username, password, email })}>
+      <br />
+      {error}
+      <button onClick={() => registerMutation({ username, password, email })}>
         Submit
       </button>
     </div>

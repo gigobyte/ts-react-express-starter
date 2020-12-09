@@ -1,19 +1,24 @@
-import axios from 'axios'
 import { useState } from 'react'
 import { useMutation } from 'react-query'
+import { ApiError, request } from '../http'
+import { setAccessToken } from '../session'
 
 const login = (data: { username: string; password: string }) =>
-  axios.post(process.env.API_ROOT + '/login', data)
+  request<{ accessToken: string }>({ method: 'POST', url: '/login', data })
 
 export const Login = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>()
 
-  const [attemptLogin] = useMutation(login)
+  const { mutateAsync: loginMutation } = useMutation(login, {
+    onSuccess: res => void setAccessToken(res.data.accessToken),
+    onError: (err: ApiError) => setError(err.response.data.code)
+  })
 
   return (
     <div>
-      Login
+      <div>Login</div>
       <input
         className="border-2 border-black"
         placeholder="username"
@@ -26,7 +31,9 @@ export const Login = () => {
         value={password}
         onChange={e => setPassword(e.target.value)}
       ></input>
-      <button onClick={() => attemptLogin({ username, password })}>
+      <br />
+      {error && JSON.stringify(error)}
+      <button onClick={() => loginMutation({ username, password })}>
         Submit
       </button>
     </div>

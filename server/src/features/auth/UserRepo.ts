@@ -3,6 +3,7 @@ import { DBError, withConn } from '../../infrastructure/DB'
 import { Maybe } from 'purify-ts/Maybe'
 import { User } from './User'
 import { EitherAsync } from 'purify-ts/EitherAsync'
+import { List } from 'purify-ts/List'
 
 export interface InsertUserDTO {
   username: string
@@ -28,7 +29,7 @@ export const findUserByUsername = (
   withConn(pool, conn =>
     conn
       .query('SELECT * FROM users WHERE username = $1 LIMIT 1', [username])
-      .then(res => Maybe.fromNullable(res.rows[0]))
+      .then(res => List.at(0, res.rows))
   )
 
 export const findUserByEmail = (
@@ -38,5 +39,5 @@ export const findUserByEmail = (
   withConn(pool, conn =>
     conn
       .query('SELECT * FROM users WHERE email = $1 LIMIT 1', [email])
-      .then(res => Maybe.fromNullable(res.rows[0]))
+      .then(res => List.at(0, res.rows))
   )

@@ -1,12 +1,12 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import { StrictMode } from 'react'
+import { render } from 'react-dom'
 import { App } from './App'
 import 'tailwindcss/tailwind.css'
 
-ReactDOM.render(
-  <React.StrictMode>
+render(
+  <StrictMode>
     <App />
-  </React.StrictMode>,
+  </StrictMode>,
   document.querySelector('main')
 )
 
