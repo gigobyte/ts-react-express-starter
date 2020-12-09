@@ -8,9 +8,15 @@ import {
   generateRefreshToken,
   verifyRefreshToken
 } from '../../infrastructure/JWT'
+import ms from 'ms'
 
 const setRefreshToken = (res: Response, token: string) => {
-  res.cookie('rtid', token, { httpOnly: true })
+  res.cookie('rtid', token, {
+    httpOnly: true,
+    path: '/refresh-token',
+    /** Must be same as the refresh token exp! */
+    expires: new Date(Date.now() + ms('30d'))
+  })
 }
 
 export const authRoutes = {
