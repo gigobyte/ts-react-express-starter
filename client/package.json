@@ -11,8 +11,8 @@
     "test": "cypress run"
   },
   "engines": {
-    "node": "15.2.1",
-    "npm": "7.0.7"
+    "node": "15.3.0",
+    "npm": "7.1.1"
   },
   "author": "",
   "license": "ISC",
@@ -28,12 +28,12 @@
     "@typescript-eslint/parser": "4.9.0",
     "babel-loader": "8.2.2",
     "css-loader": "5.0.1",
-    "cypress": "6.0.1",
+    "cypress": "6.1.0",
     "eslint": "7.15.0",
     "eslint-plugin-react": "7.21.5",
     "eslint-plugin-react-hooks": "4.2.0",
     "html-webpack-plugin": "4.5.0",
-    "postcss": "8.1.14",
+    "postcss": "8.2.0",
     "postcss-loader": "4.1.0",
     "prettier": "2.2.1",
     "style-loader": "2.0.0",
