@@ -44,5 +44,10 @@ export const authRoutes = {
         setRefreshToken(res, generateRefreshToken(username))
         res.json({ accessToken: generateAccessToken(username) })
       })
+  },
+
+  logout(_: Request, res: Response): void {
+    setRefreshToken(res, '')
+    res.status(200).send()
   }
 }

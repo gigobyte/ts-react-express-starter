@@ -27,4 +27,4 @@ export const routes: RouteConfig[] = [
   }
 ]
 
-export const publicRoutes = ['/register']
+export const hiddenAfterLoginRoutes = ['/login']

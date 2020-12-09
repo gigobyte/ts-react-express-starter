@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useMutation } from 'react-query'
 import { ApiError, request } from '../http'
-import { setAccessToken } from '../session'
+import { useSession } from '../session'
 
 const login = (data: { username: string; password: string }) =>
   request<{ accessToken: string }>({ method: 'POST', url: '/login', data })
@@ -10,9 +10,10 @@ export const Login = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>()
+  const { login: processLogin } = useSession()
 
   const { mutateAsync: loginMutation } = useMutation(login, {
-    onSuccess: res => void setAccessToken(res.data.accessToken),
+    onSuccess: res => processLogin(res.data.accessToken),
     onError: (err: ApiError) => setError(err.response.data.code)
   })
 
