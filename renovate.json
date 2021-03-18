@@ -4,5 +4,6 @@
     ":pinAllExceptPeerDependencies"
   ],
   "ignorePaths": [],
-  "automerge": true
+  "automerge": true,
+  "requiredStatusChecks": null
 }
