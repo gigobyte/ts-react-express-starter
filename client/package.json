@@ -23,7 +23,7 @@
     "@babel/preset-react": "7.13.13",
     "@babel/preset-typescript": "7.13.0",
     "@babel/types": "7.13.14",
-    "@types/webpack": "5.0.0",
+    "@types/webpack": "5.28.0",
     "@typescript-eslint/eslint-plugin": "4.19.0",
     "@typescript-eslint/parser": "4.19.0",
     "babel-loader": "8.2.2",
