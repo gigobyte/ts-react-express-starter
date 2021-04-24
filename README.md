@@ -32,5 +32,5 @@ Starter app for a full-stack TypeScript application with auth
 
 ### How to setup
 
-1. Create `.env` file in the root folder by example
+1. Create `.env` file in the `server` folder by example
 2. Change `name` and `description` in both package.json files
