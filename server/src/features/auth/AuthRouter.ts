@@ -7,7 +7,7 @@ import {
   generateAccessToken,
   generateRefreshToken,
   verifyRefreshToken
-} from '../../infrastructure/JWT'
+} from '../../infrastructure/Jwt'
 import ms from 'ms'
 
 const setRefreshToken = (res: Response, token: string) => {
