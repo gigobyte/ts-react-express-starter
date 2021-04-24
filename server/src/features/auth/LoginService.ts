@@ -5,7 +5,7 @@ import { Env } from '../../infrastructure/Env'
 import {
   generateAccessToken,
   generateRefreshToken
-} from '../../infrastructure/JWT'
+} from '../../infrastructure/Jwt'
 import { comparePasswords } from '../../infrastructure/Bcrypt'
 import { Left, Right } from 'purify-ts/Either'
 import { CustomError } from 'ts-custom-error'

@@ -4,7 +4,7 @@ import { MaybeAsync } from 'purify-ts/MaybeAsync'
 import {
   getAccessTokenFromRequest,
   verifyAccessToken
-} from '../../infrastructure/JWT'
+} from '../../infrastructure/Jwt'
 import { findUserByUsername } from './UserRepo'
 
 export const optionalUser = (
