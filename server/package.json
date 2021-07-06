@@ -22,7 +22,7 @@
   "dependencies": {
     "@types/bcrypt": "5.0.0",
     "@types/cookie-parser": "1.4.2",
-    "@types/cors": "2.8.10",
+    "@types/cors": "2.8.11",
     "@types/express": "4.17.12",
     "@types/jsonwebtoken": "8.5.3",
     "@types/morgan": "1.9.2",
