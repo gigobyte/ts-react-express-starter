@@ -27,7 +27,7 @@
     "@types/jsonwebtoken": "8.5.4",
     "@types/morgan": "1.9.3",
     "@types/ms": "0.7.31",
-    "@types/node": "14.17.7",
+    "@types/node": "14.17.8",
     "@types/pg": "8.6.1",
     "@types/uuid": "8.3.1",
     "bcrypt": "5.0.1",
