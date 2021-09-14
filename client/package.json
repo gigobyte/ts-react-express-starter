@@ -47,7 +47,7 @@
     "@types/react": "17.0.20",
     "@types/react-dom": "17.0.9",
     "@types/react-router-config": "5.0.3",
-    "@types/react-router-dom": "5.1.8",
+    "@types/react-router-dom": "5.1.9",
     "autoprefixer": "10.3.4",
     "axios": "0.21.4",
     "jwt-decode": "3.1.2",
