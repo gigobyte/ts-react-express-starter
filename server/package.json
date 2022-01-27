@@ -9,7 +9,7 @@
   },
   "engines": {
     "node": "16.13.2",
-    "npm": "8.3.2"
+    "npm": "8.4.0"
   },
   "license": "ISC",
   "devDependencies": {
