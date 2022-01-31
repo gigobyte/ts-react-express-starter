@@ -24,7 +24,7 @@
     "@babel/preset-typescript": "7.16.7",
     "@babel/types": "7.16.8",
     "@types/webpack": "5.28.0",
-    "@typescript-eslint/eslint-plugin": "5.10.1",
+    "@typescript-eslint/eslint-plugin": "5.10.2",
     "@typescript-eslint/parser": "5.10.1",
     "babel-loader": "8.2.3",
     "css-loader": "6.5.1",
