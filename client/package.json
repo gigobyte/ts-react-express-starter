@@ -12,7 +12,7 @@
   },
   "engines": {
     "node": "16.14.0",
-    "npm": "8.5.1"
+    "npm": "8.5.2"
   },
   "author": "",
   "license": "ISC",
