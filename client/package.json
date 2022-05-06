@@ -44,7 +44,7 @@
     "webpack-dev-server": "4.9.0"
   },
   "dependencies": {
-    "@types/react": "18.0.8",
+    "@types/react": "18.0.9",
     "@types/react-dom": "18.0.3",
     "@types/react-router-config": "5.0.6",
     "@types/react-router-dom": "5.3.3",
